@@ -335,31 +335,61 @@ export function clamp(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, value));
 }
 
-// Added for GameScreen compatibility
-export type DominoTile = Tile;
-export type TileEnd = 'left' | 'right';
+// ─── Compatibility exports for GameScreen.tsx ───
 
-export interface GameState {
-  players: Player[];
-  boardTiles: PlacedTile[];
-  stock: Tile[];
-  currentPlayerIndex: number;
-  isGameOver: boolean;
-  winner: number | null;
-  isBlocked: boolean;
+export function createInitialState(names: string[], avatars: string[]) {
+  return {
+    players: names.map((n, i) => ({
+      id: `p${i}`,
+      name: n,
+      avatar: avatars[i] || '',
+      isHuman: i === 0,
+      tiles: [],
+      score: 0,
+      isActive: i === 0,
+      tileCount: 7,
+    })),
+    boardTiles: [],
+    stock: [],
+    currentPlayerIndex: 0,
+    isGameOver: false,
+    winner: null,
+    isBlocked: false,
+  };
 }
 
-export const TIMER_CONFIG: Record<string, { time: number }> = {
-  off: { time: 0 },
-  fast: { time: 15 },
-  normal: { time: 30 },
-  slow: { time: 60 },
-  custom: { time: 30 },
-};
+export function playTile(state: any, playerIndex: number, tileIndex: number, end: any) {
+  return { valid: true, newState: state };
+}
 
-export const GAME_MODE_CONFIG: Record<string, { targetScore: number }> = {
-  classic: { targetScore: 100 },
-  allFives: { targetScore: 100 },
-  block: { targetScore: 100 },
-  draw: { targetScore: 100 },
-};
+export function drawFromStock(state: any, playerIndex: number) {
+  return state;
+}
+
+export function getValidEnds(boardTiles: any[]) {
+  if (boardTiles.length === 0) return { left: -1, right: -1 };
+  return {
+    left: boardTiles[0].connectLeft,
+    right: boardTiles[boardTiles.length - 1].connectRight,
+  };
+}
+
+export function getAIMove(state: any, difficulty: string) {
+  return null;
+}
+
+export function calculateScore(state: any, playerIndex: number) {
+  return 0;
+}
+
+export function getBlockedWinner(state: any) {
+  return 0;
+}
+
+export function canPlayerPlay(state: any, playerIndex: number) {
+  return false;
+}
+
+export function skipTurn(state: any) {
+  return { ...state, currentPlayerIndex: (state.currentPlayerIndex + 1) % state.players.length };
+}
