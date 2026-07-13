@@ -28,7 +28,7 @@ jobs:
 
       - name: Fix TypeScript Config
         run: |
-          sed -i 's/"compilerOptions": {/"compilerOptions": {\n    "ignoreDeprecations": "6.0",/' tsconfig.app.json
+          sed -i '/"baseUrl"/d' tsconfig.app.json
 
       - name: Fix Vite Config
         run: |
