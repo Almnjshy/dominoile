@@ -1,0 +1,3 @@
+export default function TimerBar({ duration, onComplete, isRunning, key }: any) {
+  return null;
+}
