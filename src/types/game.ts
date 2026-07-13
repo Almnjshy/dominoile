@@ -105,3 +105,33 @@ export const DIFFICULTY_SETTINGS: Record<Difficulty, { thinkTimeMin: number; thi
   expert: { thinkTimeMin: 6000, thinkTimeMax: 7000, mistakeRate: 0, strategy: 'perfect' },
   champion: { thinkTimeMin: 7000, thinkTimeMax: 8000, mistakeRate: 0, strategy: 'champion' },
 };
+
+// Added for GameScreen compatibility
+export type DominoTile = Tile;
+export type TileEnd = 'left' | 'right';
+
+export interface GameState {
+  players: Player[];
+  boardTiles: PlacedTile[];
+  stock: Tile[];
+  currentPlayerIndex: number;
+  isGameOver: boolean;
+  winner: number | null;
+  isBlocked: boolean;
+}
+
+export const TIMER_CONFIG: Record<string, { time: number }> = {
+  off: { time: 0 },
+  fast: { time: 15 },
+  normal: { time: 30 },
+  slow: { time: 60 },
+  custom: { time: 30 },
+};
+
+export const GAME_MODE_CONFIG: Record<string, { targetScore: number }> = {
+  classic: { targetScore: 100 },
+  allFives: { targetScore: 100 },
+  block: { targetScore: 100 },
+  draw: { targetScore: 100 },
+};
+
