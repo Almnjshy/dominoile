@@ -1,69 +1,25 @@
-name: Build Android APK
+# .github/workflows/deploy-vercel.yml
+name: Deploy to Vercel
 
 on:
-  workflow_dispatch:  # تشغيل يدوي فقط
+  push:
+    branches: [main]
+  workflow_dispatch:
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
-
-      - name: Install Project Dependencies
-        run: npm ci
-
-      - name: Install Capacitor CLI Globally
-        run: npm install -g @capacitor/cli
-
-      - name: Install Capacitor Android Platform
-        run: npm install @capacitor/core @capacitor/android
-
-      - name: Create Capacitor Config
-        run: |
-          cat > capacitor.config.json << 'EOF'
-          {
-            "appId": "com.almnjshy.dominoile",
-            "appName": "Domino Master",
-            "webDir": "dist",
-            "bundledWebRuntime": false
-          }
-          EOF
-
-      - name: Add Android Platform
-        run: |
-          if [ ! -d "android" ]; then
-            cap add android
-          fi
-
-      - name: Build Web App
-        run: npm run build
-
-      - name: Setup JDK 17
-        uses: actions/setup-java@v4
+      - run: npm ci
+      - run: npm run build
+      - uses: amondnet/vercel-action@v25
         with:
-          java-version: '17'
-          distribution: 'temurin'
-          cache: gradle
-
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Sync Capacitor
-        run: cap sync android
-
-      - name: Build Debug APK
-        run: cd android && ./gradlew assembleDebug
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: domino-apk
-          path: android/app/build/outputs/apk/debug/app-debug.apk
-          retention-days: 7
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: '--prod'
