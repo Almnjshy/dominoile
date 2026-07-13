@@ -1,32 +1,30 @@
 name: Build Android APK
 
 on:
-  push:
-    branches: [main]
-  workflow_dispatch:
+  workflow_dispatch:  # تشغيل يدوي فقط
 
 jobs:
-  build-android:
+  build:
     runs-on: ubuntu-latest
     steps:
-      # ─── 1. سحب الكود ───
       - name: Checkout
         uses: actions/checkout@v4
 
-      # ─── 2. Node.js 20 ───
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
 
-      # ─── 3. تثبيت Dependencies + Capacitor ───
-      - name: Install Dependencies & Capacitor
-        run: |
-          npm ci
-          npm install @capacitor/core @capacitor/cli @capacitor/android
+      - name: Install Project Dependencies
+        run: npm ci
 
-      # ─── 4. إنشاء capacitor.config.json يدوياً ───
+      - name: Install Capacitor CLI Globally
+        run: npm install -g @capacitor/cli
+
+      - name: Install Capacitor Android Platform
+        run: npm install @capacitor/core @capacitor/android
+
       - name: Create Capacitor Config
         run: |
           cat > capacitor.config.json << 'EOF'
@@ -38,15 +36,15 @@ jobs:
           }
           EOF
 
-      # ─── 5. إضافة Android Platform ───
       - name: Add Android Platform
-        run: npx cap add android
+        run: |
+          if [ ! -d "android" ]; then
+            cap add android
+          fi
 
-      # ─── 6. بناء الويب ───
       - name: Build Web App
         run: npm run build
 
-      # ─── 7. JDK 17 ───
       - name: Setup JDK 17
         uses: actions/setup-java@v4
         with:
@@ -54,23 +52,18 @@ jobs:
           distribution: 'temurin'
           cache: gradle
 
-      # ─── 8. Android SDK ───
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      # ─── 9. مزامنة Capacitor ───
       - name: Sync Capacitor
-        run: npx cap sync android
+        run: cap sync android
 
-      # ─── 10. بناء Debug APK ───
       - name: Build Debug APK
-        working-directory: ./android
-        run: ./gradlew assembleDebug
+        run: cd android && ./gradlew assembleDebug
 
-      # ─── 11. رفع APK ───
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: domino-master-apk
+          name: domino-apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
-          retention-days: 30
+          retention-days: 7
