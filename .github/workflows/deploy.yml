@@ -1,0 +1,50 @@
+name: Deploy to Vercel
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Fix TypeScript Config
+        run: |
+          node -e "
+            const fs = require('fs');
+            const tsconfig = JSON.parse(fs.readFileSync('tsconfig.app.json', 'utf8'));
+            tsconfig.compilerOptions = tsconfig.compilerOptions || {};
+            tsconfig.compilerOptions.ignoreDeprecations = '6.0';
+            fs.writeFileSync('tsconfig.app.json', JSON.stringify(tsconfig, null, 2));
+          "
+
+      - name: Fix Vite Config
+        run: |
+          sed -i "/import { inspectAttr } from 'kimi-plugin-inspect-react'/d" vite.config.ts
+          sed -i "s/inspectAttr(), //g" vite.config.ts
+          sed -i "s/inspectAttr(),//g" vite.config.ts
+          sed -i "s/inspectAttr()//g" vite.config.ts
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: '--prod'
