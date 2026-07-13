@@ -28,13 +28,7 @@ jobs:
 
       - name: Fix TypeScript Config
         run: |
-          node -e "
-            const fs = require('fs');
-            const tsconfig = JSON.parse(fs.readFileSync('tsconfig.app.json', 'utf8'));
-            tsconfig.compilerOptions = tsconfig.compilerOptions || {};
-            tsconfig.compilerOptions.ignoreDeprecations = '6.0';
-            fs.writeFileSync('tsconfig.app.json', JSON.stringify(tsconfig, null, 2));
-          "
+          sed -i 's/"compilerOptions": {/"compilerOptions": {\n    "ignoreDeprecations": "6.0",/' tsconfig.app.json
 
       - name: Fix Vite Config
         run: |
