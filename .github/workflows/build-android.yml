@@ -1,18 +1,76 @@
-name: CI - Build & Lint
+name: Build Android APK
 
 on:
-  pull_request:
+  push:
     branches: [main]
+  workflow_dispatch:  # تشغيل يدوي من GitHub
 
 jobs:
-  test:
+  build-android:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      # ─── 1. سحب الكود ───
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # ─── 2. Node.js 20 ───
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
-      - run: npm ci
-      - run: npm run lint
-      - run: npm run build
+
+      # ─── 3. تثبيت Dependencies ───
+      - name: Install Dependencies
+        run: npm ci
+
+      # ─── 4. تثبيت Capacitor ───
+      - name: Install Capacitor
+        run: npm install @capacitor/core @capacitor/cli @capacitor/android
+
+      # ─── 5. إنشاء إعدادات Capacitor ───
+      - name: Init Capacitor Config
+        run: |
+          if [ ! -f capacitor.config.ts ] && [ ! -f capacitor.config.json ]; then
+            npx cap init "Domino Master" "com.almnjshy.dominoile" --web-dir dist --npm-client npm
+          fi
+
+      # ─── 6. إضافة Android Platform ───
+      - name: Add Android Platform
+        run: |
+          if [ ! -d android ]; then
+            npx cap add android
+          fi
+
+      # ─── 7. بناء الويب ───
+      - name: Build Web App
+        run: npm run build
+
+      # ─── 8. JDK 17 ───
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+
+      # ─── 9. Android SDK ───
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      # ─── 10. مزامنة Capacitor ───
+      - name: Sync Capacitor
+        run: npx cap sync android
+
+      # ─── 11. بناء Debug APK ───
+      - name: Build Debug APK
+        working-directory: ./android
+        run: ./gradlew assembleDebug
+
+      # ─── 12. رفع APK ───
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: domino-master-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 30
