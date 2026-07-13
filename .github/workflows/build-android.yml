@@ -24,7 +24,7 @@ jobs:
       - name: Install Dependencies & Capacitor
         run: |
           npm ci
-          npm install --save-dev @capacitor/core @capacitor/cli @capacitor/android
+          npm install @capacitor/core @capacitor/cli @capacitor/android
 
       # ─── 4. إنشاء capacitor.config.json يدوياً ───
       - name: Create Capacitor Config
@@ -40,8 +40,7 @@ jobs:
 
       # ─── 5. إضافة Android Platform ───
       - name: Add Android Platform
-        run: |
-          ./node_modules/.bin/cap add android
+        run: npx cap add android
 
       # ─── 6. بناء الويب ───
       - name: Build Web App
@@ -61,8 +60,7 @@ jobs:
 
       # ─── 9. مزامنة Capacitor ───
       - name: Sync Capacitor
-        run: |
-          ./node_modules/.bin/cap sync android
+        run: npx cap sync android
 
       # ─── 10. بناء Debug APK ───
       - name: Build Debug APK
