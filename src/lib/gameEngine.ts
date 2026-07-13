@@ -334,3 +334,32 @@ export function formatScore(score: number): string {
 export function clamp(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, value));
 }
+
+// Added for GameScreen compatibility
+export type DominoTile = Tile;
+export type TileEnd = 'left' | 'right';
+
+export interface GameState {
+  players: Player[];
+  boardTiles: PlacedTile[];
+  stock: Tile[];
+  currentPlayerIndex: number;
+  isGameOver: boolean;
+  winner: number | null;
+  isBlocked: boolean;
+}
+
+export const TIMER_CONFIG: Record<string, { time: number }> = {
+  off: { time: 0 },
+  fast: { time: 15 },
+  normal: { time: 30 },
+  slow: { time: 60 },
+  custom: { time: 30 },
+};
+
+export const GAME_MODE_CONFIG: Record<string, { targetScore: number }> = {
+  classic: { targetScore: 100 },
+  allFives: { targetScore: 100 },
+  block: { targetScore: 100 },
+  draw: { targetScore: 100 },
+};
