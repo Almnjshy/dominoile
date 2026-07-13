@@ -1,0 +1,9 @@
+export const soundEngine = {
+  resume: () => {},
+  playTimerWarning: () => {},
+  playPlaceTile: () => {},
+  playDrawTile: () => {},
+  playWin: () => {},
+  playLose: () => {},
+  playClick: () => {},
+};
