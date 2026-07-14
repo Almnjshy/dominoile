@@ -3,7 +3,7 @@ import { useGameStore } from '@/store/gameStore'
 import { createInitialState, playTile, drawFromStock, getValidEnds, getAIMove, calculateScore, isGameBlocked, getBlockedWinner, canPlayerPlay, skipTurn } from '@/lib/gameEngine'
 import { getBestMove, getHintMessage, shouldDraw } from '@/lib/hintEngine'
 import { soundEngine } from '@/lib/soundEngine'
-import { GameState, DominoTile, TileEnd, TIMER_CONFIG, GAME_MODE_CONFIG } from '@/types/game'
+import type { Tile as DominoTile, TileEnd, TIMER_CONFIG, GAME_MODE_CONFIG } from '@/types/game'
 import { ArrowLeft, RotateCcw, Trophy, Lightbulb, Lock } from 'lucide-react'
 import TimerBar from '@/components/TimerBar'
 
@@ -13,7 +13,7 @@ export default function GameScreen() {
     playerName, playerAvatar, matchState, addRoundScore, initMatchState 
   } = useGameStore()
 
-  const [gameState, setGameState] = useState<GameState | null>(null)
+  const [gameState, setGameState] = useState<any | null>(null)
   const [selectedTile, setSelectedTile] = useState<number | null>(null)
   const [message, setMessage] = useState('')
   const [aiThinking, setAiThinking] = useState(false)
