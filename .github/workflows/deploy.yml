@@ -25,10 +25,21 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '24'
-          # cache: 'npm'  ← محذوف
 
       - name: Install Dependencies
         run: npm install
+
+      - name: Fix GameSettings in types/game.ts
+        run: |
+          sed -i 's/export interface GameSettings {/export interface GameSettings {\n  timerMode: string;\n  customTime: number;\n  showHints: boolean;\n  gameMode: string;\n  difficulty: string;\n  targetScore: number;/' src/types/game.ts
+
+      - name: Fix defaultSettings in gameStore.ts
+        run: |
+          sed -i 's/language: '\''ar'\'',/language: '\''ar'\'',\n  timerMode: '\''normal'\'',\n  customTime: 30,\n  showHints: true,\n  gameMode: '\''classic'\'',\n  difficulty: '\''easy'\'',\n  targetScore: 100,/' src/store/gameStore.ts
+
+      - name: Fix isGameBlocked signature
+        run: |
+          sed -i 's/export function isGameBlocked(state: any)/export function isGameBlocked(players: Player[], boneyard: Tile[])/' src/lib/gameEngine.ts
 
       - name: Build
         run: npx vite build
