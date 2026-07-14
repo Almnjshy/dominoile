@@ -83,6 +83,15 @@ interface GameState {
   // Actions
   resetMatch: () => void;
   resetAll: () => void;
+
+  // Added for GameScreen compatibility
+  playerName: string;
+  playerAvatar: string;
+  matchState: any;
+  updateStatistics: () => void;
+  updateAchievementProgress: () => void;
+  addRoundScore: () => void;
+  initMatchState: () => void;
 }
 
 const defaultSettings: GameSettings = {
@@ -90,6 +99,13 @@ const defaultSettings: GameSettings = {
   musicEnabled: true,
   vibrationEnabled: true,
   language: 'ar',
+  // Added for GameScreen compatibility
+  timerMode: 'normal',
+  customTime: 30,
+  showHints: true,
+  gameMode: 'classic',
+  difficulty: 'easy',
+  targetScore: 100,
 };
 
 const defaultProgress: GameProgress = {
@@ -253,4 +269,13 @@ export const useGameStore = create<GameState>((set, get) => ({
     gamesPlayed: 0,
     gamesWon: 0,
   }),
+
+  // Added for GameScreen compatibility
+  playerName: 'اللاعب',
+  playerAvatar: '/assets/avatar_default.png',
+  matchState: null,
+  updateStatistics: () => {},
+  updateAchievementProgress: () => {},
+  addRoundScore: () => {},
+  initMatchState: () => {},
 }));
