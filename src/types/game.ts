@@ -55,6 +55,12 @@ export interface GameSettings {
   musicEnabled: boolean;
   vibrationEnabled: boolean;
   language: 'ar' | 'en';
+  timerMode: string;
+  customTime: number;
+  showHints: boolean;
+  gameMode: string;
+  difficulty: string;
+  targetScore: number;
 }
 
 export interface GameProgress {
@@ -106,7 +112,7 @@ export const DIFFICULTY_SETTINGS: Record<Difficulty, { thinkTimeMin: number; thi
   champion: { thinkTimeMin: 7000, thinkTimeMax: 8000, mistakeRate: 0, strategy: 'champion' },
 };
 
-// Added for GameScreen compatibility
+// ─── Added for GameScreen.tsx compatibility ───
 export type DominoTile = Tile;
 export type TileEnd = 'left' | 'right';
 
@@ -134,18 +140,3 @@ export const GAME_MODE_CONFIG: Record<string, { targetScore: number }> = {
   block: { targetScore: 100 },
   draw: { targetScore: 100 },
 };
-
-// ─── Types required by GameScreen.tsx ───
-export type DominoTile = Tile;
-export type TileEnd = 'left' | 'right';
-
-export interface GameState {
-  players: Player[];
-  boardTiles: PlacedTile[];
-  stock: Tile[];
-  currentPlayerIndex: number;
-  isGameOver: boolean;
-  winner: number | null;
-  isBlocked: boolean;
-}
-
