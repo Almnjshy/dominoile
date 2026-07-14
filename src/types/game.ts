@@ -149,11 +149,3 @@ export interface GameState {
   isBlocked: boolean;
 }
 
-export const TIMER_CONFIG: Record<string, { time: number }> = {
-  off: { time: 0 },
-  fast: { time: 15 },
-  normal: { time: 30 },
-  slow: { time: 60 },
-  custom: { time: 30 },
-};
-
