@@ -157,10 +157,3 @@ export const TIMER_CONFIG: Record<string, { time: number }> = {
   custom: { time: 30 },
 };
 
-export const GAME_MODE_CONFIG: Record<string, { targetScore: number }> = {
-  classic: { targetScore: 100 },
-  allFives: { targetScore: 100 },
-  block: { targetScore: 100 },
-  draw: { targetScore: 100 },
-};
-
