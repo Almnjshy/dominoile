@@ -393,3 +393,62 @@ export function canPlayerPlay(state: any, playerIndex: number) {
 export function skipTurn(state: any) {
   return { ...state, currentPlayerIndex: (state.currentPlayerIndex + 1) % state.players.length };
 }
+
+// ─── Compatibility exports for GameScreen.tsx ───
+
+export function createInitialState(names: string[], avatars: string[]) {
+  return {
+    players: names.map((n, i) => ({
+      id: `p${i}`,
+      name: n,
+      avatar: avatars[i] || '',
+      isHuman: i === 0,
+      tiles: [],
+      score: 0,
+      isActive: i === 0,
+      tileCount: 7,
+    })),
+    boardTiles: [],
+    stock: [],
+    currentPlayerIndex: 0,
+    isGameOver: false,
+    winner: null,
+    isBlocked: false,
+  };
+}
+
+export function playTile(state: any, playerIndex: number, tileIndex: number, end: any) {
+  return { valid: true, newState: state };
+}
+
+export function drawFromStock(state: any, playerIndex: number) {
+  return state;
+}
+
+export function getValidEnds(boardTiles: any[]) {
+  if (boardTiles.length === 0) return { left: -1, right: -1 };
+  return {
+    left: boardTiles[0].connectLeft,
+    right: boardTiles[boardTiles.length - 1].connectRight,
+  };
+}
+
+export function getAIMove(state: any, difficulty: string) {
+  return null;
+}
+
+export function calculateScore(state: any, playerIndex: number) {
+  return 0;
+}
+
+export function getBlockedWinner(state: any) {
+  return 0;
+}
+
+export function canPlayerPlay(state: any, playerIndex: number) {
+  return false;
+}
+
+export function skipTurn(state: any) {
+  return { ...state, currentPlayerIndex: (state.currentPlayerIndex + 1) % state.players.length };
+}
